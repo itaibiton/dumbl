@@ -15,6 +15,7 @@ import { LogBox } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
+import { useUserSync } from '@/hooks/useUserSync';
 // import * as Sentry from '@sentry/react-native';
 
 SplashScreen.preventAutoHideAsync();
@@ -66,11 +67,14 @@ const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
   const router = useRouter();
-  const user = useUser();
+  
+  // Initialize user sync (this handles all the sync logic)
+  useUserSync();
 
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
+
 
   useEffect(() => {
     if (!isLoaded) return;
