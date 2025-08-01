@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router';
 import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import { useUserSync } from '@/hooks/useUserSync';
+import { ThemeProvider } from '@/providers/theme-provider';
 // import * as Sentry from '@sentry/react-native';
 import './global.css';
 
@@ -111,13 +112,15 @@ const RootLayoutNav = () => {
   // }, [ref]);
 
   return (
-    <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
-      <ClerkLoaded>
-        <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-          <InitialLayout />
-        </ConvexProviderWithClerk>
-      </ClerkLoaded>
-    </ClerkProvider>
+    <ThemeProvider defaultTheme="system" storageKey="dumbl-theme">
+      <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
+        <ClerkLoaded>
+          <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+            <InitialLayout />
+          </ConvexProviderWithClerk>
+        </ClerkLoaded>
+      </ClerkProvider>
+    </ThemeProvider>
   );
 };
 
