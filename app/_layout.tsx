@@ -17,6 +17,8 @@ import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import { useUserSync } from '@/hooks/useUserSync';
 // import * as Sentry from '@sentry/react-native';
+import './global.css';
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -67,7 +69,7 @@ const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
   const router = useRouter();
-  
+
   // Initialize user sync (this handles all the sync logic)
   useUserSync();
 

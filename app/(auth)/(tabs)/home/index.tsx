@@ -4,6 +4,8 @@ const HomePage = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Welcome Home</Text>
+            <Text className='text-red-500'>Hello</Text>
+            <Text className='text-blue-500'>Hello</Text>
             <Text style={styles.subtitle}>Your fitness journey starts here</Text>
         </View>
     );
