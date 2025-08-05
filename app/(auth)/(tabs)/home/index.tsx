@@ -7,7 +7,8 @@ import {
     Button,
     ButtonText,
     ThemeToggle,
-    Separator
+    Separator,
+    ThemeDebug
 } from '@/components/ui';
 
 const HomePage = () => {
@@ -27,6 +28,8 @@ const HomePage = () => {
                     </View>
                     <ThemeToggle variant="icon" />
                 </View>
+
+                <ThemeDebug />
 
                 <Separator />
 

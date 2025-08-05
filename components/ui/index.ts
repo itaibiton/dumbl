@@ -6,6 +6,7 @@ export * from './badge';
 export * from './separator';
 export * from './progress';
 export * from './theme-toggle';
+export * from './theme-debug';
 
 // Fitness-specific Components
 export * from './workout-card';

@@ -3,4 +3,10 @@ const { withNativeWind } = require('nativewind/metro');
 
 const config = getDefaultConfig(__dirname);
 
-module.exports = withNativeWind(config, { input: './app/global.css' });
+// Enable CSS support for Metro
+config.resolver.assetExts.push('css');
+
+module.exports = withNativeWind(config, { 
+  input: './app/global.css',
+  configPath: './tailwind.config.js'
+});

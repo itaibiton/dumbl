@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useColorScheme as useColorSchemeNativeWind } from 'nativewind';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -10,6 +11,7 @@ interface ThemeProviderContextType {
   actualTheme: 'light' | 'dark';
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
+  colorScheme: 'light' | 'dark';
 }
 
 const ThemeProviderContext = createContext<ThemeProviderContextType | undefined>(
@@ -32,9 +34,18 @@ export function ThemeProvider({
   const systemTheme = useColorScheme() ?? 'light';
   const [theme, setThemeState] = useState<Theme>(defaultTheme);
   const [mounted, setMounted] = useState(false);
+  
+  // Use NativeWind's colorScheme hook
+  const { setColorScheme, colorScheme } = useColorSchemeNativeWind();
 
   // Calculate the actual theme being used
   const actualTheme = theme === 'system' ? systemTheme : theme;
+
+  // Immediately set the initial colorScheme
+  React.useEffect(() => {
+    setColorScheme(actualTheme);
+  }, []);
+
 
   // Load theme from storage on mount
   useEffect(() => {
@@ -70,18 +81,35 @@ export function ThemeProvider({
     setTheme(newTheme);
   };
 
-  // Apply theme to document if running on web
+  // Apply theme changes for both web and native
   useEffect(() => {
-    if (typeof document !== 'undefined') {
+    // Apply NativeWind colorScheme - this is the key for React Native
+    setColorScheme(actualTheme);
+    
+    if (Platform.OS === 'web') {
       const root = document.documentElement;
       
+      // Remove existing theme classes
       root.classList.remove('light', 'dark');
       root.classList.add(actualTheme);
       
-      // Also set data attribute for CSS-in-JS libraries
+      // Set data attribute for CSS-in-JS libraries
       root.setAttribute('data-theme', actualTheme);
+      
+      // Also update the color-scheme property for better browser integration
+      root.style.colorScheme = actualTheme;
     }
-  }, [actualTheme]);
+
+    // Force a re-render after theme change (React Native specific)
+    if (Platform.OS !== 'web') {
+      // Small delay to ensure NativeWind processes the theme change
+      const timeoutId = setTimeout(() => {
+        console.log('Theme applied for React Native:', actualTheme);
+      }, 50);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [actualTheme, setColorScheme]);
 
   const value: ThemeProviderContextType = {
     theme,
@@ -89,10 +117,11 @@ export function ThemeProvider({
     actualTheme,
     setTheme,
     toggleTheme,
+    colorScheme: colorScheme || actualTheme, // Use NativeWind's colorScheme if available
   };
 
-  // Don't render until theme is loaded to prevent flash
-  if (!mounted) {
+  // Don't render until theme is loaded to prevent flash (only on web)
+  if (!mounted && Platform.OS === 'web') {
     return null;
   }
 
