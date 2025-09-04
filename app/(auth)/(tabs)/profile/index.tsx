@@ -3,18 +3,6 @@ import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
 import { useUser } from '@clerk/clerk-expo';
 import { useUserSync } from '@/hooks/useUserSync';
 import { SignOutButton } from '@/components/SignOutButton';
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle,
-  StatCard,
-  ThemeToggle,
-  Badge,
-  Separator,
-  Button,
-  ButtonText
-} from '@/components/ui';
 
 const ProfilePage = () => {
     const { user: clerkUser } = useUser();
@@ -22,169 +10,75 @@ const ProfilePage = () => {
     // Get user sync data
     const { convexUser, syncStatus, lastSyncError, syncRetries, isLoading } = useUserSync();
 
-    const getSyncStatusBadge = () => {
+    const getSyncStatusText = () => {
         switch (syncStatus) {
             case 'loading':
-                return <Badge variant="warning">Loading...</Badge>;
+                return 'Loading...';
             case 'synced':
-                return <Badge variant="success">Synced</Badge>;
+                return 'Synced';
             case 'error':
-                return <Badge variant="destructive">Error</Badge>;
+                return 'Error';
             default:
-                return <Badge variant="outline">Not Synced</Badge>;
+                return 'Not Synced';
         }
     };
 
     return (
-        <ScrollView className="flex-1 bg-background">
-            <View className="p-6 space-y-6">
-                {/* Header */}
-                <View className="flex-row items-center justify-between">
-                    <Text className="text-2xl font-bold text-foreground">Profile</Text>
-                    <ThemeToggle variant="icon" />
+        <ScrollView>
+            <View>
+                <Text>Profile</Text>
+
+                {/* Sync Status */}
+                <View>
+                    <Text>Sync Status: {getSyncStatusText()}</Text>
+                    {syncStatus === 'loading' && <ActivityIndicator size="small" />}
                 </View>
 
-                <Separator />
+                {/* Show sync error if present */}
+                {lastSyncError && (
+                    <View>
+                        <Text>Sync Error: {lastSyncError}</Text>
+                        {syncRetries > 0 && (
+                            <Text>Retried {syncRetries} time(s)</Text>
+                        )}
+                    </View>
+                )}
 
-                {/* User Stats */}
-                <View className="flex-row space-x-4">
-                    <StatCard
-                        title="Workouts"
-                        value={47}
-                        description="Total completed"
-                        variant="success"
-                        size="sm"
-                        className="flex-1"
-                    />
-                    <StatCard
-                        title="Streak"
-                        value={12}
-                        unit="days"
-                        description="Current streak"
-                        variant="warning"
-                        size="sm"
-                        className="flex-1"
-                    />
-                </View>
-
-                {/* User Information */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Account Information</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {/* Sync Status */}
-                        <View className="flex-row items-center justify-between">
-                            <Text className="text-sm font-medium text-foreground">
-                                Sync Status
+                {/* User Details */}
+                {(convexUser || clerkUser) && (
+                    <View>
+                        <View>
+                            <Text>Email</Text>
+                            <Text>
+                                {convexUser?.email || clerkUser?.emailAddresses[0]?.emailAddress}
                             </Text>
-                            <View className="flex-row items-center space-x-2">
-                                {getSyncStatusBadge()}
-                                {syncStatus === 'loading' && (
-                                    <ActivityIndicator size="small" />
-                                )}
-                            </View>
                         </View>
-
-                        {/* Show sync error if present */}
-                        {lastSyncError && (
-                            <View className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                                <Text className="text-sm font-medium text-destructive">
-                                    Sync Error: {lastSyncError}
-                                </Text>
-                                {syncRetries > 0 && (
-                                    <Text className="text-xs text-muted-foreground mt-1">
-                                        Retried {syncRetries} time(s)
-                                    </Text>
-                                )}
+                        
+                        {(convexUser?.name || clerkUser?.fullName) && (
+                            <View>
+                                <Text>Name</Text>
+                                <Text>{convexUser?.name || clerkUser?.fullName}</Text>
                             </View>
                         )}
-
-                        <Separator />
-
-                        {/* User Details */}
-                        {(convexUser || clerkUser) && (
-                            <View className="space-y-3">
-                                <View>
-                                    <Text className="text-sm font-medium text-muted-foreground">
-                                        Email
-                                    </Text>
-                                    <Text className="text-base text-foreground">
-                                        {convexUser?.email || clerkUser?.emailAddresses[0]?.emailAddress}
-                                    </Text>
-                                </View>
-                                
-                                {(convexUser?.name || clerkUser?.fullName) && (
-                                    <View>
-                                        <Text className="text-sm font-medium text-muted-foreground">
-                                            Name
-                                        </Text>
-                                        <Text className="text-base text-foreground">
-                                            {convexUser?.name || clerkUser?.fullName}
-                                        </Text>
-                                    </View>
-                                )}
-                                
-                                <View>
-                                    <Text className="text-sm font-medium text-muted-foreground">
-                                        User ID
-                                    </Text>
-                                    <Text className="text-sm font-mono text-muted-foreground">
-                                        {convexUser?._id || 'Not synced yet'}
-                                    </Text>
-                                </View>
-                                
-                                {convexUser && (
-                                    <View>
-                                        <Text className="text-sm font-medium text-muted-foreground">
-                                            Last Updated
-                                        </Text>
-                                        <Text className="text-sm text-muted-foreground">
-                                            {new Date(convexUser.updatedAt).toLocaleString()}
-                                        </Text>
-                                    </View>
-                                )}
+                        
+                        <View>
+                            <Text>User ID</Text>
+                            <Text>{convexUser?._id || 'Not synced yet'}</Text>
+                        </View>
+                        
+                        {convexUser && (
+                            <View>
+                                <Text>Last Updated</Text>
+                                <Text>{new Date(convexUser.updatedAt).toLocaleString()}</Text>
                             </View>
                         )}
-                    </CardContent>
-                </Card>
-
-                {/* Theme Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Appearance</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ThemeToggle />
-                    </CardContent>
-                </Card>
-
-                {/* App Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Settings</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                        <Button variant="outline" className="w-full">
-                            <ButtonText variant="outline">Notification Settings</ButtonText>
-                        </Button>
-                        
-                        <Button variant="outline" className="w-full">
-                            <ButtonText variant="outline">Privacy & Security</ButtonText>
-                        </Button>
-                        
-                        <Button variant="outline" className="w-full">
-                            <ButtonText variant="outline">Data & Storage</ButtonText>
-                        </Button>
-                    </CardContent>
-                </Card>
+                    </View>
+                )}
 
                 {/* Sign Out */}
-                <View className="pt-4">
+                <View>
                     <SignOutButton />
                 </View>
-
-                <View className="pb-8" />
             </View>
         </ScrollView>
     );

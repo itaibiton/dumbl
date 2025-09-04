@@ -1,5 +1,5 @@
 import { Slot, useNavigationContainerRef, useSegments, ErrorBoundary } from 'expo-router';
-import { tokenCache } from '@clerk/clerk-expo/token-cache'
+import { tokenCache } from '@clerk/clerk-expo/token-cache';
 
 // import {
 //   useFonts,
@@ -16,10 +16,8 @@ import { useRouter } from 'expo-router';
 import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import { useUserSync } from '@/hooks/useUserSync';
-import { ThemeProvider } from '@/providers/theme-provider';
 // import * as Sentry from '@sentry/react-native';
-import './global.css';
-
+import '../global.css';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -78,7 +76,6 @@ const InitialLayout = () => {
     SplashScreen.hideAsync();
   }, []);
 
-
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -112,15 +109,13 @@ const RootLayoutNav = () => {
   // }, [ref]);
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="dumbl-theme">
-      <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
-        <ClerkLoaded>
-          <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-            <InitialLayout />
-          </ConvexProviderWithClerk>
-        </ClerkLoaded>
-      </ClerkProvider>
-    </ThemeProvider>
+    <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
+      <ClerkLoaded>
+        <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+          <InitialLayout />
+        </ConvexProviderWithClerk>
+      </ClerkLoaded>
+    </ClerkProvider>
   );
 };
 

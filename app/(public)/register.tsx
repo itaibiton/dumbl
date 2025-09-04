@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { useSignUp } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
 
@@ -102,19 +102,18 @@ const RegisterScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.container}>
-                <Text style={styles.title}>Create your account</Text>
+        <View>
+            <ScrollView>
+                <Text>Create your account</Text>
 
-                <View style={styles.buttonContainer}>
-                    <View style={styles.emailFormContainer}>
+                <View>
+                    <View>
                         {!pendingVerification ? (
                             <>
-                                <Text style={styles.emailFormTitle}>Enter your details to get started</Text>
+                                <Text>Enter your details to get started</Text>
 
-                                <View style={styles.inputContainer}>
+                                <View>
                                     <TextInput
-                                        style={styles.input}
                                         placeholder="Email address"
                                         value={email}
                                         onChangeText={setEmail}
@@ -124,7 +123,6 @@ const RegisterScreen = () => {
                                         editable={!isLoading}
                                     />
                                     <TextInput
-                                        style={styles.input}
                                         placeholder="Password"
                                         value={password}
                                         onChangeText={setPassword}
@@ -134,7 +132,6 @@ const RegisterScreen = () => {
                                         editable={!isLoading}
                                     />
                                     <TextInput
-                                        style={styles.input}
                                         placeholder="Confirm password"
                                         value={confirmPassword}
                                         onChangeText={setConfirmPassword}
@@ -146,11 +143,10 @@ const RegisterScreen = () => {
                                 </View>
 
                                 <TouchableOpacity 
-                                    style={[styles.emailButton, isLoading && styles.emailButtonDisabled]} 
                                     onPress={handleRegister}
                                     disabled={isLoading}
                                 >
-                                    <Text style={styles.emailButtonText}>
+                                    <Text>
                                         {isLoading ? 'Creating account...' : 'Create Account'}
                                     </Text>
                                 </TouchableOpacity>
@@ -159,20 +155,19 @@ const RegisterScreen = () => {
                                     onPress={navigateToSignIn}
                                     disabled={isLoading}
                                 >
-                                    <Text style={styles.switchModeText}>
+                                    <Text>
                                         Already have an account? Sign In
                                     </Text>
                                 </TouchableOpacity>
                             </>
                         ) : (
                             <>
-                                <Text style={styles.emailFormTitle}>
+                                <Text>
                                     Enter the verification code sent to {email}
                                 </Text>
 
-                                <View style={styles.inputContainer}>
+                                <View>
                                     <TextInput
-                                        style={styles.input}
                                         placeholder="Verification code"
                                         value={verificationCode}
                                         onChangeText={setVerificationCode}
@@ -184,11 +179,10 @@ const RegisterScreen = () => {
                                 </View>
 
                                 <TouchableOpacity 
-                                    style={[styles.emailButton, isLoading && styles.emailButtonDisabled]} 
                                     onPress={handleVerifyEmail}
                                     disabled={isLoading}
                                 >
-                                    <Text style={styles.emailButtonText}>
+                                    <Text>
                                         {isLoading ? 'Verifying...' : 'Verify Email'}
                                     </Text>
                                 </TouchableOpacity>
@@ -197,7 +191,7 @@ const RegisterScreen = () => {
                                     onPress={() => setPendingVerification(false)}
                                     disabled={isLoading}
                                 >
-                                    <Text style={styles.switchModeText}>
+                                    <Text>
                                         ← Back to email
                                     </Text>
                                 </TouchableOpacity>
@@ -209,68 +203,5 @@ const RegisterScreen = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        gap: 20,
-        paddingTop: 100,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    buttonContainer: {
-        gap: 20,
-        marginHorizontal: 20,
-        width: '100%',
-        maxWidth: 400,
-    },
-    emailFormContainer: {
-        width: '100%',
-        gap: 20,
-    },
-    emailFormTitle: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 10,
-        color: '#666',
-    },
-    inputContainer: {
-        gap: 15,
-    },
-    input: {
-        backgroundColor: '#fff',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: '#ddd',
-        fontSize: 16,
-    },
-    emailButton: {
-        backgroundColor: '#000',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    emailButtonDisabled: {
-        backgroundColor: '#666',
-    },
-    emailButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '500',
-    },
-    switchModeText: {
-        fontSize: 14,
-        color: '#007AFF',
-        textAlign: 'center',
-    },
-});
 
 export default RegisterScreen;

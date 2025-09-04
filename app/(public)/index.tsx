@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { useSignIn } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
 
@@ -50,17 +50,16 @@ const LoginScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.container}>
-                <Text style={styles.title}>Sign in to your account</Text>
+        <View>
+            <ScrollView>
+                <Text>Sign in to your account</Text>
 
-                <View style={styles.buttonContainer}>
-                    <View style={styles.emailFormContainer}>
-                        <Text style={styles.emailFormTitle}>Enter your credentials to sign in</Text>
+                <View>
+                    <View>
+                        <Text>Enter your credentials to sign in</Text>
 
-                        <View style={styles.inputContainer}>
+                        <View>
                             <TextInput
-                                style={styles.input}
                                 placeholder="Email address"
                                 value={email}
                                 onChangeText={setEmail}
@@ -70,7 +69,6 @@ const LoginScreen = () => {
                                 editable={!isLoading}
                             />
                             <TextInput
-                                style={styles.input}
                                 placeholder="Password"
                                 value={password}
                                 onChangeText={setPassword}
@@ -82,11 +80,10 @@ const LoginScreen = () => {
                         </View>
 
                         <TouchableOpacity 
-                            style={[styles.emailButton, isLoading && styles.emailButtonDisabled]} 
                             onPress={handleEmailSignIn}
                             disabled={isLoading}
                         >
-                            <Text style={styles.emailButtonText}>
+                            <Text>
                                 {isLoading ? 'Signing in...' : 'Sign In'}
                             </Text>
                         </TouchableOpacity>
@@ -95,7 +92,7 @@ const LoginScreen = () => {
                             onPress={navigateToRegister} 
                             disabled={isLoading}
                         >
-                            <Text style={styles.switchModeText}>
+                            <Text>
                                 Don't have an account? Register
                             </Text>
                         </TouchableOpacity>
@@ -105,68 +102,5 @@ const LoginScreen = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        gap: 20,
-        paddingTop: 100,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    buttonContainer: {
-        gap: 20,
-        marginHorizontal: 20,
-        width: '100%',
-        maxWidth: 400,
-    },
-    emailFormContainer: {
-        width: '100%',
-        gap: 20,
-    },
-    emailFormTitle: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 10,
-        color: '#666',
-    },
-    inputContainer: {
-        gap: 15,
-    },
-    input: {
-        backgroundColor: '#fff',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: '#ddd',
-        fontSize: 16,
-    },
-    emailButton: {
-        backgroundColor: '#000',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    emailButtonDisabled: {
-        backgroundColor: '#666',
-    },
-    emailButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '500',
-    },
-    switchModeText: {
-        fontSize: 14,
-        color: '#007AFF',
-        textAlign: 'center',
-    },
-});
 
 export default LoginScreen;
