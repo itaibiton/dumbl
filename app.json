@@ -10,7 +10,16 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.dumbl"
+      "bundleIdentifier": "com.anonymous.dumbl",
+      "userInterfaceStyle": "light",
+      "infoPlist": {
+        "UIViewControllerBasedStatusBarAppearance": false
+      }
+    },
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "transparent",
+      "translucent": true
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +27,12 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.dumbl"
+      "package": "com.anonymous.dumbl",
+      "statusBar": {
+        "barStyle": "light-content",
+        "backgroundColor": "transparent",
+        "translucent": true
+      }
     },
     "web": {
       "bundler": "metro",
@@ -33,7 +47,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#3b82f6"
         }
       ]
     ],

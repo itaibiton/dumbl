@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, Alert, StatusBar, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { useSignUp } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RegisterScreen = () => {
     const { signUp, setActive, isLoaded } = useSignUp();
@@ -12,6 +15,8 @@ const RegisterScreen = () => {
     const [pendingVerification, setPendingVerification] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleRegister = async () => {
         if (!isLoaded || isLoading) return;
@@ -102,105 +107,233 @@ const RegisterScreen = () => {
     };
 
     return (
-        <View>
-            <ScrollView>
-                <Text>Create your account</Text>
-
-                <View>
-                    <View>
-                        {!pendingVerification ? (
-                            <>
-                                <Text>Enter your details to get started</Text>
-
-                                <View>
-                                    <TextInput
-                                        placeholder="Email address"
-                                        value={email}
-                                        onChangeText={setEmail}
-                                        keyboardType="email-address"
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        editable={!isLoading}
-                                    />
-                                    <TextInput
-                                        placeholder="Password"
-                                        value={password}
-                                        onChangeText={setPassword}
-                                        secureTextEntry
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        editable={!isLoading}
-                                    />
-                                    <TextInput
-                                        placeholder="Confirm password"
-                                        value={confirmPassword}
-                                        onChangeText={setConfirmPassword}
-                                        secureTextEntry
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        editable={!isLoading}
-                                    />
+        <>
+            <StatusBar barStyle="light-content" />
+            <LinearGradient
+                colors={['#8b5cf6', '#ec4899']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                className="flex-1"
+            >
+                <SafeAreaView className="flex-1">
+                    <KeyboardAvoidingView 
+                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        className="flex-1"
+                    >
+                        <ScrollView 
+                            className="flex-1"
+                            contentContainerStyle={{ flexGrow: 1 }}
+                            keyboardShouldPersistTaps="handled"
+                        >
+                            <View className="flex-1 justify-center px-6">
+                                {/* Logo/Title Section */}
+                                <View className="mb-8 items-center">
+                                    <View className="mb-4 h-20 w-20 items-center justify-center rounded-full bg-white/20">
+                                        <Ionicons name="fitness" size={40} color="white" />
+                                    </View>
+                                    <Text className="text-4xl font-bold text-white">Join Dumbl</Text>
+                                    <Text className="mt-2 text-white/80">Start Your Fitness Transformation</Text>
                                 </View>
 
-                                <TouchableOpacity 
-                                    onPress={handleRegister}
-                                    disabled={isLoading}
-                                >
-                                    <Text>
-                                        {isLoading ? 'Creating account...' : 'Create Account'}
-                                    </Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity 
-                                    onPress={navigateToSignIn}
-                                    disabled={isLoading}
-                                >
-                                    <Text>
-                                        Already have an account? Sign In
-                                    </Text>
-                                </TouchableOpacity>
-                            </>
-                        ) : (
-                            <>
-                                <Text>
-                                    Enter the verification code sent to {email}
-                                </Text>
-
-                                <View>
-                                    <TextInput
-                                        placeholder="Verification code"
-                                        value={verificationCode}
-                                        onChangeText={setVerificationCode}
-                                        keyboardType="number-pad"
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        editable={!isLoading}
-                                    />
+                                {/* Registration Form */}
+                                <View className="rounded-3xl bg-white/10 p-6 backdrop-blur-lg">
+                                    {!pendingVerification ? (
+                                        <>
+                                            <Text className="mb-6 text-center text-2xl font-bold text-white">Create Account</Text>
+                                            
+                                            {/* Email Input */}
+                                            <View className="mb-4">
+                                                <View className="flex-row items-center rounded-xl bg-white/20 px-4">
+                                                    <Ionicons name="mail-outline" size={20} color="white" />
+                                                    <TextInput
+                                                        className="flex-1 py-4 pl-3 text-white"
+                                                        placeholder="Email address"
+                                                        placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                                                        value={email}
+                                                        onChangeText={setEmail}
+                                                        keyboardType="email-address"
+                                                        autoCapitalize="none"
+                                                        autoCorrect={false}
+                                                        editable={!isLoading}
+                                                    />
+                                                </View>
+                                            </View>
+                                            
+                                            {/* Password Input */}
+                                            <View className="mb-4">
+                                                <View className="flex-row items-center rounded-xl bg-white/20 px-4">
+                                                    <Ionicons name="lock-closed-outline" size={20} color="white" />
+                                                    <TextInput
+                                                        className="flex-1 py-4 pl-3 text-white"
+                                                        placeholder="Password (min 8 characters)"
+                                                        placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                                                        value={password}
+                                                        onChangeText={setPassword}
+                                                        secureTextEntry={!showPassword}
+                                                        autoCapitalize="none"
+                                                        autoCorrect={false}
+                                                        editable={!isLoading}
+                                                    />
+                                                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                                                        <Ionicons 
+                                                            name={showPassword ? "eye-off-outline" : "eye-outline"} 
+                                                            size={20} 
+                                                            color="white" 
+                                                        />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                            
+                                            {/* Confirm Password Input */}
+                                            <View className="mb-6">
+                                                <View className="flex-row items-center rounded-xl bg-white/20 px-4">
+                                                    <Ionicons name="lock-closed-outline" size={20} color="white" />
+                                                    <TextInput
+                                                        className="flex-1 py-4 pl-3 text-white"
+                                                        placeholder="Confirm password"
+                                                        placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                                                        value={confirmPassword}
+                                                        onChangeText={setConfirmPassword}
+                                                        secureTextEntry={!showConfirmPassword}
+                                                        autoCapitalize="none"
+                                                        autoCorrect={false}
+                                                        editable={!isLoading}
+                                                    />
+                                                    <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                                                        <Ionicons 
+                                                            name={showConfirmPassword ? "eye-off-outline" : "eye-outline"} 
+                                                            size={20} 
+                                                            color="white" 
+                                                        />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                            
+                                            {/* Sign Up Button */}
+                                            <TouchableOpacity 
+                                                onPress={handleRegister}
+                                                disabled={isLoading}
+                                                className={`mb-4 overflow-hidden rounded-xl ${
+                                                    isLoading ? 'opacity-70' : ''
+                                                }`}
+                                            >
+                                                <LinearGradient
+                                                    colors={['#10b981', '#059669']}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    className="px-6 py-4"
+                                                >
+                                                    {isLoading ? (
+                                                        <ActivityIndicator color="white" />
+                                                    ) : (
+                                                        <Text className="text-center text-lg font-bold text-white">
+                                                            Create Account
+                                                        </Text>
+                                                    )}
+                                                </LinearGradient>
+                                            </TouchableOpacity>
+                                            
+                                            {/* Divider */}
+                                            <View className="my-4 flex-row items-center">
+                                                <View className="h-px flex-1 bg-white/20" />
+                                                <Text className="mx-4 text-white/60">OR</Text>
+                                                <View className="h-px flex-1 bg-white/20" />
+                                            </View>
+                                            
+                                            {/* Sign In Link */}
+                                            <TouchableOpacity 
+                                                onPress={navigateToSignIn}
+                                                disabled={isLoading}
+                                                className="rounded-xl border border-white/30 px-6 py-4"
+                                            >
+                                                <Text className="text-center font-semibold text-white">
+                                                    Already have an account? Sign In
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {/* Verification Code Section */}
+                                            <Text className="mb-2 text-center text-2xl font-bold text-white">
+                                                Verify Your Email
+                                            </Text>
+                                            <Text className="mb-6 text-center text-sm text-white/80">
+                                                We've sent a code to {email}
+                                            </Text>
+                                            
+                                            {/* Verification Code Input */}
+                                            <View className="mb-6">
+                                                <View className="flex-row items-center rounded-xl bg-white/20 px-4">
+                                                    <Ionicons name="key-outline" size={20} color="white" />
+                                                    <TextInput
+                                                        className="flex-1 py-4 pl-3 text-center text-white"
+                                                        placeholder="Enter 6-digit code"
+                                                        placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                                                        value={verificationCode}
+                                                        onChangeText={setVerificationCode}
+                                                        keyboardType="number-pad"
+                                                        maxLength={6}
+                                                        autoCapitalize="none"
+                                                        autoCorrect={false}
+                                                        editable={!isLoading}
+                                                    />
+                                                </View>
+                                            </View>
+                                            
+                                            {/* Verify Button */}
+                                            <TouchableOpacity 
+                                                onPress={handleVerifyEmail}
+                                                disabled={isLoading}
+                                                className={`mb-4 overflow-hidden rounded-xl ${
+                                                    isLoading ? 'opacity-70' : ''
+                                                }`}
+                                            >
+                                                <LinearGradient
+                                                    colors={['#10b981', '#059669']}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    className="px-6 py-4"
+                                                >
+                                                    {isLoading ? (
+                                                        <ActivityIndicator color="white" />
+                                                    ) : (
+                                                        <Text className="text-center text-lg font-bold text-white">
+                                                            Verify Email
+                                                        </Text>
+                                                    )}
+                                                </LinearGradient>
+                                            </TouchableOpacity>
+                                            
+                                            {/* Back to Email */}
+                                            <TouchableOpacity 
+                                                onPress={() => setPendingVerification(false)}
+                                                disabled={isLoading}
+                                                className="flex-row items-center justify-center"
+                                            >
+                                                <Ionicons name="arrow-back" size={20} color="white" />
+                                                <Text className="ml-2 text-white/80">Back to registration</Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    )}
                                 </View>
 
-                                <TouchableOpacity 
-                                    onPress={handleVerifyEmail}
-                                    disabled={isLoading}
-                                >
-                                    <Text>
-                                        {isLoading ? 'Verifying...' : 'Verify Email'}
-                                    </Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity 
-                                    onPress={() => setPendingVerification(false)}
-                                    disabled={isLoading}
-                                >
-                                    <Text>
-                                        ← Back to email
-                                    </Text>
-                                </TouchableOpacity>
-                            </>
-                        )}
-                    </View>
-                </View>
-            </ScrollView>
-        </View>
+                                {/* Terms */}
+                                {!pendingVerification && (
+                                    <View className="mt-6">
+                                        <Text className="text-center text-xs text-white/60">
+                                            By creating an account, you agree to our{' '}
+                                            <Text className="text-white/80">Terms of Service</Text>
+                                            {' '}and{' '}
+                                            <Text className="text-white/80">Privacy Policy</Text>
+                                        </Text>
+                                    </View>
+                                )}
+                            </View>
+                        </ScrollView>
+                    </KeyboardAvoidingView>
+                </SafeAreaView>
+            </LinearGradient>
+        </>
     );
 };
 
